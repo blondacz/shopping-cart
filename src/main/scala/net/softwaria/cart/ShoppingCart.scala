@@ -7,6 +7,7 @@ object ShoppingCart {
 
   val prices: Map[Item, BigDecimal] = Map(
     Apple -> BigDecimal("0.60"),
+    Banana -> BigDecimal("0.20"),
     Orange -> BigDecimal("0.25"))
 
   val totalCostWithoutOffers: Cart => Option[BigDecimal] = items => items.foldLeft(Option(Zero))((tc, i) => tc.flatMap(c => prices.get(i).map(_ + c)))

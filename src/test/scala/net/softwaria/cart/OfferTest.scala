@@ -1,11 +1,13 @@
 package net.softwaria.cart
 
-import net.softwaria.cart.Offer.{Buy1GetOneFreeOfferFoApples, Buy3For2OfferForOranges, applyOffer}
+import net.softwaria.cart.Offer._
 import net.softwaria.cart.ShoppingCart.Zero
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 
 class OfferTest extends AnyFreeSpec with Matchers {
+
+
   "'Buy 1 Get 1 Free' offer for Apples " - {
     "should not apply" - {
       "when no items provided" in {
@@ -55,8 +57,57 @@ class OfferTest extends AnyFreeSpec with Matchers {
     }
   }
 
+  "'Buy 1 Get 1 Free' offer for Banana " - {
+    "should not apply" - {
+      "when no items provided" in {
+        val cart = Nil
+        applyOffer(Buy1GetOneFreeOfferFoBanana, cart) shouldBe Zero
+      }
 
-  "'3 for price of 2' offer for Oranges" - {
+      "for one Banana only" in {
+        val cart = Banana :: Nil
+        applyOffer(Buy1GetOneFreeOfferFoBanana, cart) shouldBe Zero
+      }
+
+      "for Oranges" in {
+        val cart = Orange :: Nil
+        applyOffer(Buy1GetOneFreeOfferFoBanana, cart) shouldBe Zero
+      }
+    }
+
+
+    val singleBananaPrice = ShoppingCart.prices(Banana)
+
+    "should apply 'Buy 1 Get 1 Free' offer on Banana" - {
+
+      "once for 2 Bananas" in {
+        val cart = Banana :: Banana :: Nil
+
+        applyOffer(Buy1GetOneFreeOfferFoBanana, cart) shouldBe singleBananaPrice
+      }
+
+      "once for 3 Bananas" in {
+        val cart = List.fill(3)(Banana)
+
+        applyOffer(Buy1GetOneFreeOfferFoBanana, cart) shouldBe singleBananaPrice
+      }
+
+      "twice for 4 Bananas" in {
+        val cart = List.fill(4)(Banana)
+
+        applyOffer(Buy1GetOneFreeOfferFoBanana, cart) shouldBe 2 * singleBananaPrice
+      }
+
+      "twice for 5 Bananas" in {
+        val cart = List.fill(5)(Banana)
+
+        applyOffer(Buy1GetOneFreeOfferFoBanana, cart) shouldBe 2 * singleBananaPrice
+      }
+    }
+  }
+
+
+  "'3 for price of 2' offer for Bannanas" - {
     "should not apply " - {
       "when no items provided" in {
         val cart = Nil
@@ -110,6 +161,37 @@ class OfferTest extends AnyFreeSpec with Matchers {
       "twice for 7 oranges" in {
         val cart = List.fill(7)(Orange)
         applyOffer(Buy3For2OfferForOranges, cart) shouldBe singleOrangePrice * 2
+      }
+    }
+  }
+
+
+  "'Cheapest Free' offer for Apples and Bananas" - {
+    "should not apply " - {
+      "when no items provided" in {
+        val cart = Nil
+        applyOffer(CheapestFreeForApplesAndBananas, cart) shouldBe Zero
+      }
+
+      "for one Apple only" in {
+        val cart = Apple :: Nil
+        applyOffer(CheapestFreeForApplesAndBananas, cart) shouldBe Zero
+      }
+
+      "for one Banana only" in {
+        val cart = Banana :: Nil
+        applyOffer(CheapestFreeForApplesAndBananas, cart) shouldBe Zero
+      }
+    }
+
+
+    val singleBananaPrice = ShoppingCart.prices(Banana)
+
+    "should apply" - {
+      "once for Apple and Banana" in {
+        val cart = Apple :: Banana :: Nil
+
+        applyOffer(CheapestFreeForApplesAndBananas, cart) shouldBe singleBananaPrice
       }
     }
   }

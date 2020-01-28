@@ -55,6 +55,13 @@ class ShoppingCartTest extends AnyFreeSpec with Matchers with OptionValues {
 
       ShoppingCart.totalCost(cart).value shouldBe BigDecimal("1.10")
     }
+
+
+    "should calculate total with 'Buy 1 Get One Free' and 'Buy Cheapest' offers applied" in {
+      val cart = List(Apple, Apple, Banana, Banana)
+
+      ShoppingCart.totalCost(cart).value shouldBe BigDecimal("0.40")
+    }
   }
 
   "price list" - {
@@ -64,6 +71,10 @@ class ShoppingCartTest extends AnyFreeSpec with Matchers with OptionValues {
 
     "contains price for orange" in {
       ShoppingCart.prices.get(Orange).value shouldBe BigDecimal("0.25")
+    }
+
+    "contains price for banana" in {
+      ShoppingCart.prices.get(Banana).value shouldBe BigDecimal("0.20")
     }
   }
 }
